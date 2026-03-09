@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/subzero_provider.dart';
+import 'screens/login_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => SubZeroProvider(),
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -9,12 +15,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'SubZero',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
+      home: const LoginScreen(),
     );
   }
 }

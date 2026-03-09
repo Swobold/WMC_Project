@@ -21,6 +21,7 @@ export function initDb() {
         FOREIGN KEY (family_id) REFERENCES families(id)
       )
     `);
+    db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username)`);
 
     db.run(`
       CREATE TABLE IF NOT EXISTS categories (

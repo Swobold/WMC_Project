@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "nodemon",
+    "dev": "npx nodemon",
     "build": "tsc",
     "start": "node dist/index.js"
   },
