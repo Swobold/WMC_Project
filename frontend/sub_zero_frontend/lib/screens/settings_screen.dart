@@ -64,13 +64,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 if (provider.user != null)
-                  SwitchListTile(
-                    title: const Text('Euro (€) / Dollar (\$)'),
-                    subtitle: Text(provider.user!.isEur ? 'Euro' : 'Dollar'),
-                    value: provider.user!.isEur,
-                    onChanged: (v) {
-                      if (v != null) provider.updateUserCurrency(v);
-                    },
+                  ListTile(
+                    leading: Icon(Icons.attach_money, color: Colors.blue[700]),
+                    title: const Text('Währung'),
+                    subtitle: Text(provider.user!.isEur ? 'Euro (€)' : 'Dollar (\$)'),
+                    trailing: DropdownButton<bool>(
+                      value: provider.user!.isEur,
+                      items: const [
+                        DropdownMenuItem(value: true, child: Text('€ Euro')),
+                        DropdownMenuItem(value: false, child: Text('\$ Dollar')),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) provider.updateUserCurrency(v);
+                      },
+                    ),
                   ),
                 const Divider(),
                 const Padding(

@@ -31,14 +31,6 @@ class HomeScreen extends StatelessWidget {
     return '/$billingCycle';
   }
 
-  static String _currencySymbol(String code) {
-    switch (code.toUpperCase()) {
-      case 'EUR': return '€';
-      case 'USD': return '\$';
-      default: return code;
-    }
-  }
-
   static Color _parseColorHex(String hex) {
     try {
       final h = hex.startsWith('#') ? hex.substring(1) : hex;
@@ -76,7 +68,7 @@ class HomeScreen extends StatelessWidget {
               if (stats != null)
                 MonthlyTotalCard(
                   monthlyTotal: stats.total,
-                  currency: _currencySymbol(stats.currency),
+                  currency: provider.currencySymbol,
                   activeSubscriptionsCount: subs.length,
                 ),
               Padding(
@@ -113,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                           return SubscriptionListItem(
                             title: sub.title,
                             price: sub.price,
-                            currency: _currencySymbol(sub.currency),
+                            currency: provider.currencySymbol,
                             dueDateLabel: _formatDueDate(sub.nextReminderDate),
                             frequencyLabel: _formatFrequency(sub.billingCycle),
                             badgeColor: _parseColorHex(sub.category.colorHex),

@@ -42,6 +42,9 @@ class SubZeroProvider extends ChangeNotifier {
   User? _user;
   User? get user => _user;
 
+  /// Währungssymbol basierend auf User-Präferenz (isEur).
+  String get currencySymbol => (_user?.isEur ?? true) ? '€' : '\$';
+
   // -----------------------------
   // AUTH
   // -----------------------------
@@ -279,8 +282,17 @@ class SubZeroProvider extends ChangeNotifier {
   // USER
   // -----------------------------
 
-  void updateUserCurrency(bool isEur) async {
-    if (_loggedInUserId == null) return;
+  Future<void> updateUserCurrency(bool isEur) async {
+    if (_loggedInUserId == null || _user == null) return;
+    final previousUser = _user!;
+    _user = User(
+      id: previousUser.id,
+      username: previousUser.username,
+      email: previousUser.email,
+      familyId: previousUser.familyId,
+      isEur: isEur,
+    );
+    notifyListeners();
     try {
       final response = await http.put(
         Uri.parse('$_baseUrl/users/$_loggedInUserId/currency'),
@@ -288,11 +300,14 @@ class SubZeroProvider extends ChangeNotifier {
         body: jsonEncode({'isEur': isEur}),
       );
       if (response.statusCode == 200) {
-        loadUser(_loggedInUserId!);
         _reloadUserData();
+      } else {
+        _user = previousUser;
+        notifyListeners();
       }
     } catch (e) {
-      loadUser(_loggedInUserId!);
+      _user = previousUser;
+      notifyListeners();
     }
   }
 

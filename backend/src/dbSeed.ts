@@ -19,7 +19,7 @@ export function seedDb() {
     );
     db.run(
       "INSERT INTO users (id, username, email, password, family_id, is_eur) VALUES (?, ?, ?, ?, ?, ?)",
-      [2, "Niko", "niko@mail.com", "1234", 1, 0]
+      [2, "Niko", "niko@mail.com", "1234", 1, 1]
     );
 
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [1, "Streaming", "#FF00AA"]);

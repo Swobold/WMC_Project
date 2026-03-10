@@ -9,17 +9,6 @@ import '../providers/subzero_provider.dart';
 class AnalysisScreen extends StatelessWidget {
   const AnalysisScreen({super.key});
 
-  static String _currencySymbol(String code) {
-    switch (code.toUpperCase()) {
-      case 'EUR':
-        return '€';
-      case 'USD':
-        return '\$';
-      default:
-        return code;
-    }
-  }
-
   static Color _parseColorHex(String hex) {
     try {
       final h = hex.startsWith('#') ? hex.substring(1) : hex;
@@ -56,9 +45,7 @@ class AnalysisScreen extends StatelessWidget {
         final statsByCategory = provider.statsByCategory;
 
         final total = statsTotal?.total ?? 0.0;
-        final currency = statsTotal != null
-            ? _currencySymbol(statsTotal.currency)
-            : '€';
+        final currency = provider.currencySymbol;
         final pieSections = _buildPieSections(statsByCategory);
 
         final username = provider.loggedInUsername ?? 'User';
@@ -114,7 +101,7 @@ class AnalysisScreen extends StatelessWidget {
                         categoryName: item.categoryName,
                         percent: item.percent,
                         sum: item.sum,
-                        currency: _currencySymbol(item.currency),
+                        currency: provider.currencySymbol,
                         color: _parseColorHex(item.colorHex),
                       ),
                     ),

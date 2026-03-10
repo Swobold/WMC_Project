@@ -22,17 +22,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
     super.dispose();
   }
 
-  static String _currencySymbol(String code) {
-    switch (code.toUpperCase()) {
-      case 'EUR':
-        return '€';
-      case 'USD':
-        return '\$';
-      default:
-        return code;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<SubZeroProvider>(
@@ -42,7 +31,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
         final members = provider.familyMembers;
         final membersWithStats = provider.familyMembersWithStats;
         final total = provider.familyTotal ?? 0.0;
-        final currency = _currencySymbol(provider.familyCurrency);
+        final currency = provider.currencySymbol;
 
         if (user?.familyId == null) {
           return Scaffold(
@@ -199,6 +188,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                     member: m,
                     percent: percent,
                     color: color,
+                    currency: currency,
                   );
                 })
               else

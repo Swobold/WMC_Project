@@ -7,19 +7,20 @@ class FamilyMemberCard extends StatelessWidget {
   final FamilyMemberWithStats member;
   final double percent;
   final Color color;
+  final String currency;
 
   const FamilyMemberCard({
     super.key,
     required this.member,
     required this.percent,
     required this.color,
+    required this.currency,
   });
 
   @override
   Widget build(BuildContext context) {
     final initial = member.username.isNotEmpty ? member.username[0].toUpperCase() : '?';
-    final sym = member.currency.toUpperCase() == 'USD' ? '\$' : '€';
-    final formattedSum = '$sym${member.sum.toStringAsFixed(2)}';
+    final formattedSum = '$currency${member.sum.toStringAsFixed(2)}';
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
