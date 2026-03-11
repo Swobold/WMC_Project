@@ -1,14 +1,22 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/api_config.dart';
 import '../models/models.dart';
+import '../theme/app_theme.dart';
 
 class SubZeroProvider extends ChangeNotifier {
-  SubZeroProvider() {
+  static const String _themeKey = 'theme_mode';
+
+  SubZeroProvider({AppThemeMode? initialThemeMode}) {
+    _themeMode = initialThemeMode ?? AppThemeMode.light;
     loadCategories();
   }
+
+  AppThemeMode _themeMode = AppThemeMode.light;
+  AppThemeMode get themeMode => _themeMode;
 
   // URL
   final String _baseUrl = apiBaseUrl;
@@ -44,6 +52,20 @@ class SubZeroProvider extends ChangeNotifier {
 
   /// Währungssymbol basierend auf User-Präferenz (isEur).
   String get currencySymbol => (_user?.isEur ?? true) ? '€' : '\$';
+
+  // -----------------------------
+  // THEME
+  // -----------------------------
+
+  Future<void> setThemeMode(AppThemeMode mode) async {
+    if (_themeMode == mode) return;
+    _themeMode = mode;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_themeKey, mode.storageKey);
+    } catch (_) {}
+  }
 
   // -----------------------------
   // AUTH

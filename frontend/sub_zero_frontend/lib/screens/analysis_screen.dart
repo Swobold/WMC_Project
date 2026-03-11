@@ -5,6 +5,7 @@ import '../components/analysis_card.dart';
 import '../components/category_bar_item.dart';
 import '../models/stats_by_category_item.dart';
 import '../providers/subzero_provider.dart';
+import '../theme/app_theme.dart';
 
 class AnalysisScreen extends StatelessWidget {
   const AnalysisScreen({super.key});
@@ -61,10 +62,9 @@ class AnalysisScreen extends StatelessWidget {
                     child: Text(
                       'Noch keine Auswertung möglich.\nFüge Abos hinzu.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ),
                 )
@@ -73,12 +73,7 @@ class AnalysisScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Hallo, $username!',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      child: Text('Hallo, $username!', style: greetingStyle(context)),
                     ),
                     AnalysisCard(
                       totalMonthlySpending: total,
@@ -87,14 +82,7 @@ class AnalysisScreen extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      child: Text(
-                        'Nach Kategorie',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[700],
-                        ),
-                      ),
+                      child: Text('Nach Kategorie', style: sectionTitleStyle(context)),
                     ),
                     ...statsByCategory.map(
                       (item) => CategoryBarItem(

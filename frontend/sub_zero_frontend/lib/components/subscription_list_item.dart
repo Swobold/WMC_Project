@@ -26,19 +26,24 @@ class SubscriptionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: theme.brightness == Brightness.dark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Row(
         children: [
@@ -50,7 +55,7 @@ class SubscriptionListItem extends StatelessWidget {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -61,10 +66,9 @@ class SubscriptionListItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: theme.textTheme.titleSmall!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2C3E50),
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -73,14 +77,13 @@ class SubscriptionListItem extends StatelessWidget {
                     Icon(
                       Icons.calendar_today,
                       size: 14,
-                      color: Colors.grey[600],
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       dueDateLabel,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -93,17 +96,15 @@ class SubscriptionListItem extends StatelessWidget {
             children: [
               Text(
                 '$currency${price.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF2C3E50),
+                  color: colorScheme.onSurface,
                 ),
               ),
               Text(
                 frequencyLabel,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -111,7 +112,7 @@ class SubscriptionListItem extends StatelessWidget {
           if (onDelete != null) ...[
             const SizedBox(width: 8),
             IconButton(
-              icon: Icon(Icons.delete_outline, color: Colors.grey[600]),
+              icon: Icon(Icons.delete_outline, color: colorScheme.onSurfaceVariant),
               onPressed: onDelete,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),

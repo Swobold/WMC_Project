@@ -22,9 +22,11 @@ export function seedDb() {
       [2, "Niko", "niko@mail.com", "1234", 1, 1]
     );
 
-    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [1, "Streaming", "#FF00AA"]);
-    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [2, "Cloud", "#00AEEF"]);
-
+    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [1, "Streaming", "#FFB3D1"]);
+    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [2, "Cloud", "#BDE0FE"]);
+    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [3, "Productivity", "#C7EFCF"]);
+    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [4, "Entertainment", "#D8C3F5"]);
+    db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [5, "Development", "#FFE5B4"]);
     // Preise werden in EUR gespeichert (Basiswährung!)
     db.run(
       `INSERT INTO subscriptions

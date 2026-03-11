@@ -18,41 +18,42 @@ class AnalysisCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final formattedTotal = '$currency${totalMonthlySpending.toStringAsFixed(2)}';
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: theme.brightness == Brightness.dark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Total Monthly Spending',
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodySmall!.copyWith(
               fontWeight: FontWeight.w500,
-              color: Colors.grey[700],
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             formattedTotal,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2C3E50),
+            style: theme.textTheme.headlineSmall!.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 24),
@@ -62,7 +63,7 @@ class AnalysisCard extends StatelessWidget {
                 ? Center(
                     child: Text(
                       'Keine Daten',
-                      style: TextStyle(color: Colors.grey[600]),
+                      style: theme.textTheme.bodyMedium!.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   )
                 : PieChart(

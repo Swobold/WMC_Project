@@ -4,6 +4,7 @@ import '../components/monthly_total_card.dart';
 import '../components/subscription_list_item.dart';
 import '../models/subscription.dart';
 import '../providers/subzero_provider.dart';
+import '../theme/app_theme.dart';
 import 'add_subscription_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -58,12 +59,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text(
-                  'Hallo, $username!',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: Text('Hallo, $username!', style: greetingStyle(context)),
               ),
               if (stats != null)
                 MonthlyTotalCard(
@@ -87,13 +83,12 @@ class HomeScreen extends StatelessWidget {
                     ? Center(
                         child: Padding(
                           padding: const EdgeInsets.all(24),
-                          child: Text(
+                            child: Text(
                             'Noch alles ruhig hier…\n\nFüge dein erstes Abo hinzu.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                         ),
                       )
@@ -126,8 +121,8 @@ class HomeScreen extends StatelessWidget {
                 MaterialPageRoute(builder: (_) => const AddSubscriptionScreen()),
               );
             },
-            backgroundColor: const Color(0xFF27AE60),
-            child: const Icon(Icons.add, color: Colors.white),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
           ),
         );
       },

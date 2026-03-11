@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../components/monthly_total_card.dart';
 import '../components/family_member_card.dart';
 import '../providers/subzero_provider.dart';
+import '../theme/app_theme.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key});
@@ -164,14 +165,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: Text(
-                  'Members',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
-                  ),
-                ),
+                child: Text('Members', style: sectionTitleStyle(context)),
               ),
               if (membersWithStats.isNotEmpty)
                 ...membersWithStats.asMap().entries.map((e) {

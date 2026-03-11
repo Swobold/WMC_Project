@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/subzero_provider.dart';
+import '../theme/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -23,15 +24,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           body: SafeArea(
             child: ListView(
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
                     'Benachrichtigungen',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
+                    style: sectionTitleStyle(context),
                   ),
                 ),
                 ListTile(
@@ -52,20 +49,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const Divider(),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
                     'Währung',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
+                    style: sectionTitleStyle(context),
                   ),
                 ),
                 if (provider.user != null)
                   ListTile(
-                    leading: Icon(Icons.attach_money, color: Colors.blue[700]),
+                    leading: Icon(Icons.attach_money, color: Theme.of(context).colorScheme.primary),
                     title: const Text('Währung'),
                     subtitle: Text(provider.user!.isEur ? 'Euro (€)' : 'Dollar (\$)'),
                     trailing: DropdownButton<bool>(
@@ -80,20 +73,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 const Divider(),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
-                    'Themes',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
+                    'Darstellung',
+                    style: sectionTitleStyle(context),
                   ),
                 ),
-                const ListTile(
-                  title: Text('Farb-Schemes'),
-                  subtitle: Text('Kommt später – 3 Schemas auswählbar'),
+                ListTile(
+                  leading: Icon(Icons.palette_outlined, color: Theme.of(context).colorScheme.primary),
+                  title: const Text('Erscheinungsbild'),
+                  subtitle: Text(provider.themeMode.label),
+                  trailing: DropdownButton<AppThemeMode>(
+                    value: provider.themeMode,
+                    items: AppThemeMode.values
+                        .map((m) => DropdownMenuItem(
+                              value: m,
+                              child: Text(m.label),
+                            ))
+                        .toList(),
+                    onChanged: (v) {
+                      if (v != null) provider.setThemeMode(v);
+                    },
+                  ),
                 ),
               ],
             ),
