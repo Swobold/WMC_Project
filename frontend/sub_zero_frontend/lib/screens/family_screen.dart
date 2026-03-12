@@ -172,10 +172,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   final m = e.value;
                   final percent = total > 0 ? (m.sum / total * 100) : 0.0;
                   final colors = [
-                    const Color(0xFF3498DB),
-                    const Color(0xFF9B59B6),
-                    const Color(0xFFE74C3C),
-                    const Color(0xFF2ECC71),
+                    const Color(0xFFBDE0FE),
+                    const Color(0xFFD8C3F5),
+                    const Color(0xFFFFC9C9),
+                    const Color(0xFFC7EFCF),
                   ];
                   final color = colors[e.key % colors.length];
                   return FamilyMemberCard(

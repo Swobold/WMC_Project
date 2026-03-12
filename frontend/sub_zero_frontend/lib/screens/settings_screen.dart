@@ -11,7 +11,27 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _reminderDays = 5;
+  static Color _parseColorHex(String hex) {
+    if (hex.isEmpty) return const Color(0xFF95A5A6);
+    try {
+      final h = hex.startsWith('#') ? hex.substring(1) : hex;
+      return Color(int.parse('FF$h', radix: 16));
+    } catch (_) {
+      return const Color(0xFF95A5A6);
+    }
+  }
+
+  static String _formatNotificationDate(String nextReminderDateIso, int daysBefore) {
+    if (daysBefore <= 0) return 'Keine Erinnerung';
+    try {
+      final due = DateTime.parse(nextReminderDateIso);
+      final notificationDate = due.subtract(Duration(days: daysBefore));
+      const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      return '${notificationDate.day}. ${months[notificationDate.month - 1]}';
+    } catch (_) {
+      return '–';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,31 +44,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           body: SafeArea(
             child: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Text(
-                    'Benachrichtigungen',
-                    style: sectionTitleStyle(context),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Erinnerung vor Zahlungstermin'),
-                  subtitle: Text('$_reminderDays Tage davor'),
-                  trailing: DropdownButton<int>(
-                    value: _reminderDays,
-                    items: const [
-                      DropdownMenuItem(value: 3, child: Text('3 Tage')),
-                      DropdownMenuItem(value: 4, child: Text('4 Tage')),
-                      DropdownMenuItem(value: 5, child: Text('5 Tage')),
-                      DropdownMenuItem(value: 6, child: Text('6 Tage')),
-                      DropdownMenuItem(value: 7, child: Text('7 Tage')),
-                    ],
-                    onChanged: (v) {
-                      if (v != null) setState(() => _reminderDays = v);
-                    },
-                  ),
-                ),
-                const Divider(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
@@ -97,6 +92,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                 ),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Benachrichtigungen',
+                    style: sectionTitleStyle(context),
+                  ),
+                ),
+                if (provider.subscriptions.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      'Keine Abos – füge Abos hinzu, um Erinnerungen zu setzen.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  )
+                else
+                  ...provider.subscriptions.map((sub) {
+                    final raw = provider.getReminderDays(sub.id);
+                    final days = [0, 1, 3, 7].contains(raw) ? raw : 0;
+                    final badgeColor = _parseColorHex(sub.category.colorHex);
+                    return ListTile(
+                      leading: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: badgeColor,
+                        child: Text(
+                          sub.title.isNotEmpty ? sub.title[0].toUpperCase() : '?',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      title: Text(sub.title),
+                      subtitle: Text(_formatNotificationDate(sub.nextReminderDate, days)),
+                      trailing: DropdownButton<int>(
+                        value: days,
+                        items: const [
+                          DropdownMenuItem(value: 0, child: Text('Keine')),
+                          DropdownMenuItem(value: 1, child: Text('1 Tag davor')),
+                          DropdownMenuItem(value: 3, child: Text('3 Tage davor')),
+                          DropdownMenuItem(value: 7, child: Text('7 Tage davor')),
+                        ],
+                        onChanged: (v) {
+                          if (v != null) provider.setReminderPref(sub.id, v);
+                        },
+                      ),
+                    );
+                  }),
               ],
             ),
           ),

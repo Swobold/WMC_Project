@@ -5,18 +5,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/api_config.dart';
 import '../models/models.dart';
+import '../services/reminder_service.dart';
 import '../theme/app_theme.dart';
 
 class SubZeroProvider extends ChangeNotifier {
   static const String _themeKey = 'theme_mode';
+  static const String _reminderPrefsKey = 'subscription_reminders';
 
   SubZeroProvider({AppThemeMode? initialThemeMode}) {
     _themeMode = initialThemeMode ?? AppThemeMode.light;
     loadCategories();
+    _loadReminderPrefs();
   }
 
   AppThemeMode _themeMode = AppThemeMode.light;
   AppThemeMode get themeMode => _themeMode;
+
+  /// Erinnerung pro Abo: subId -> Tage davor (0 = aus, 5/15/25 = an)
+  Map<int, int> _reminderPrefs = {};
+  Map<int, int> get reminderPrefs => Map.unmodifiable(_reminderPrefs);
+
+  int getReminderDays(int subId) => _reminderPrefs[subId] ?? 0;
 
   // URL
   final String _baseUrl = apiBaseUrl;
@@ -65,6 +74,52 @@ class SubZeroProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_themeKey, mode.storageKey);
     } catch (_) {}
+  }
+
+  // -----------------------------
+  // REMINDER PREFS (SharedPreferences, geräteabhängig)
+  // -----------------------------
+
+  Future<void> _loadReminderPrefs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_reminderPrefsKey);
+      if (json != null) {
+        final map = jsonDecode(json) as Map<String, dynamic>;
+        _reminderPrefs = map.map((k, v) => MapEntry(int.parse(k), v as int));
+      }
+      notifyListeners();
+    } catch (_) {
+      _reminderPrefs = {};
+    }
+  }
+
+  Future<void> setReminderPref(int subId, int daysBefore) async {
+    if (daysBefore == 0) {
+      _reminderPrefs.remove(subId);
+    } else {
+      _reminderPrefs[subId] = daysBefore;
+    }
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final map = _reminderPrefs.map((k, v) => MapEntry(k.toString(), v));
+      await prefs.setString(_reminderPrefsKey, jsonEncode(map));
+    } catch (_) {}
+
+    final sub = _subscriptions.where((s) => s.id == subId).firstOrNull;
+    if (sub != null) {
+      if (daysBefore > 0) {
+        await ReminderService().updateReminder(
+          subId: subId,
+          title: sub.title,
+          nextPaymentDate: sub.nextReminderDate,
+          daysBefore: daysBefore,
+        );
+      } else {
+        await ReminderService().cancelReminder(subId);
+      }
+    }
   }
 
   // -----------------------------
@@ -198,6 +253,7 @@ class SubZeroProvider extends ChangeNotifier {
         _subscriptions = data
             .map((x) => Subscription.fromJson(x as Map<String, dynamic>))
             .toList();
+        _rescheduleAllReminders();
         notifyListeners();
       }
     } catch (e) {
@@ -244,6 +300,21 @@ class SubZeroProvider extends ChangeNotifier {
       loadStatsByCategory(_loggedInUserId!);
       if (_user?.familyId != null) {
         _loadFamilyData();
+      }
+    }
+  }
+
+  /// Plant alle gespeicherten Erinnerungen neu (nach Sub-Load).
+  Future<void> _rescheduleAllReminders() async {
+    for (final sub in _subscriptions) {
+      final days = _reminderPrefs[sub.id];
+      if (days != null && days > 0) {
+        ReminderService().updateReminder(
+          subId: sub.id,
+          title: sub.title,
+          nextPaymentDate: sub.nextReminderDate,
+          daysBefore: days,
+        );
       }
     }
   }
