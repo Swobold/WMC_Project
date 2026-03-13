@@ -49,13 +49,11 @@ class AnalysisScreen extends StatelessWidget {
         final currency = provider.currencySymbol;
         final pieSections = _buildPieSections(statsByCategory);
 
-        final username = provider.loggedInUsername ?? 'User';
+        final username = provider.loggedInUsername ?? 'Benutzer';
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Analysis'),
-          ),
-          body: statsByCategory.isEmpty && total == 0
+          body: SafeArea(
+            child: statsByCategory.isEmpty && total == 0
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
@@ -95,6 +93,7 @@ class AnalysisScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+          ),
         );
       },
     );

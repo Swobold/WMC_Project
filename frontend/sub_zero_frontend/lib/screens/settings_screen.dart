@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/subzero_provider.dart';
 import '../theme/app_theme.dart';
+import 'login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -38,14 +39,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Consumer<SubZeroProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Settings'),
-          ),
           body: SafeArea(
             child: ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Einstellungen',
+                    style: greetingStyle(context),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Text(
                     'Währung',
                     style: sectionTitleStyle(context),
@@ -91,6 +96,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (v != null) provider.setThemeMode(v);
                     },
                   ),
+                ),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Abmelden',
+                    style: sectionTitleStyle(context),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.primary),
+                  title: const Text('Von Konto abmelden'),
+                  onTap: () {
+                    provider.logout();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      (route) => false,
+                    );
+                  },
                 ),
                 const Divider(),
                 Padding(

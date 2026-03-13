@@ -42,7 +42,7 @@ class AnalysisCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Total Monthly Spending',
+            'Monatliche Gesamtausgaben',
             style: theme.textTheme.bodySmall!.copyWith(
               fontWeight: FontWeight.w500,
               color: colorScheme.onSurfaceVariant,

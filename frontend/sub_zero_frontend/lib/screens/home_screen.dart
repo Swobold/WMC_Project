@@ -11,24 +11,24 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static const _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez',
   ];
 
   static String _formatDueDate(String isoDate) {
     try {
       final dt = DateTime.parse(isoDate);
-      return 'Due ${_monthNames[dt.month - 1]} ${dt.day}';
+      return 'Fällig ${dt.day}. ${_monthNames[dt.month - 1]}';
     } catch (_) {
-      return 'Due –';
+      return 'Fällig –';
     }
   }
 
   static String _formatFrequency(String billingCycle) {
     final lower = billingCycle.toLowerCase();
-    if (lower.contains('month')) return '/month';
-    if (lower.contains('year')) return '/year';
-    if (lower.contains('week')) return '/week';
+    if (lower.contains('month')) return '/Monat';
+    if (lower.contains('year')) return '/Jahr';
+    if (lower.contains('week')) return '/Woche';
     return '/$billingCycle';
   }
 
@@ -48,13 +48,11 @@ class HomeScreen extends StatelessWidget {
         final stats = provider.statsTotal;
         final subs = provider.subscriptions;
 
-        final username = provider.loggedInUsername ?? 'User';
+        final username = provider.loggedInUsername ?? 'Benutzer';
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('SubZero – Dashboard'),
-          ),
-          body: Column(
+          body: SafeArea(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
@@ -70,7 +68,7 @@ class HomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: Text(
-                  'Your Subscriptions',
+                  'Deine Abos',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -113,6 +111,7 @@ class HomeScreen extends StatelessWidget {
                       ),
               ),
             ],
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {

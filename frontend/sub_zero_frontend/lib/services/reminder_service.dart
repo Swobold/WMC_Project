@@ -47,11 +47,16 @@ class ReminderService {
     _initialized = true;
   }
 
-  /// Plant eine Erinnerung für ein Abo.
   /// [subId] – Subscription-ID (wird als Notification-ID genutzt)
   /// [title] – Abo-Name
   /// [nextPaymentDate] – ISO-String z.B. "2026-03-15T00:00:00Z"
-  /// [daysBefore] – 5, 15 oder 25 Tage davor
+  /// [daysBefore] – 1, 3 oder 7 Tage davor
+  ///
+  /// Monatliche Wiederholung: matchDateTimeComponents sorgt dafür, dass die
+  /// Erinnerung jeden Monat am gleichen Tag wiederholt wird.
+  /// Achtung: Bei Tag 29–31 (z.B. "3 Tage vor dem 3.") kann Android in kurzen
+  /// Monaten (Feb, Apr, Jun, Sep, Nov) inkonsistent sein. Wir nutzen Tag 28 als
+  /// Fallback – die Erinnerung kommt dann 1–3 Tage früher, aber zuverlässig.
   Future<void> scheduleReminder({
     required int subId,
     required String title,
@@ -67,7 +72,23 @@ class ReminderService {
     final reminderDate = dt.subtract(Duration(days: daysBefore));
     if (reminderDate.isBefore(DateTime.now())) return;
 
-    final tzDate = tz.TZDateTime.from(reminderDate, tz.local);
+    // Tag 29–31: Android hat Probleme in kurzen Monaten (Feb hat keinen 31.).
+    // Fallback auf 28 = Erinnerung 1–3 Tage früher, aber zuverlässig.
+    int dayForRepeat = reminderDate.day;
+    if (dayForRepeat >= 29) dayForRepeat = 28;
+
+    // Feste Uhrzeit 19:00 statt Mitternacht – besser testbar und sinnvoller
+    const reminderHour = 19;
+    const reminderMinute = 0;
+
+    final tzDate = tz.TZDateTime(
+      tz.local,
+      reminderDate.year,
+      reminderDate.month,
+      dayForRepeat,
+      reminderHour,
+      reminderMinute,
+    );
     final daysText = daysBefore == 1 ? '1 Tag' : '$daysBefore Tage';
     await _plugin.zonedSchedule(
       subId,
@@ -83,7 +104,8 @@ class ReminderService {
           priority: Priority.defaultPriority,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );

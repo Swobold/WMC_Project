@@ -19,7 +19,7 @@ class User {
       username: json['username'] as String,
       email: json['email'] as String,
       familyId: json['family_id'] as int?,
-      isEur: (json['isEur'] ?? json['is_eur'] ?? 1) == 1,
+      isEur: (json['isEur'] ?? json['is_eur'] ?? 1) == true || (json['isEur'] ?? json['is_eur'] ?? 1) == 1,
     );
   }
 

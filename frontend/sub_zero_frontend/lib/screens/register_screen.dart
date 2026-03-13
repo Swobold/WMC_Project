@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           }
                         },
-                        child: const Text('Account erstellen'),
+                        child: const Text('Konto erstellen'),
                       ),
                     ],
                   ),

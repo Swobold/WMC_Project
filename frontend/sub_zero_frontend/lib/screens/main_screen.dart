@@ -49,10 +49,10 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Analysis'),
-          BottomNavigationBarItem(icon: Icon(Icons.family_restroom), label: 'Family'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Start'),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Auswertung'),
+          BottomNavigationBarItem(icon: Icon(Icons.family_restroom), label: 'Familie'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Einstellungen'),
         ],
       ),
     );

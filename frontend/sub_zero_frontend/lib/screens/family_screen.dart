@@ -13,6 +13,8 @@ class FamilyScreen extends StatefulWidget {
 }
 
 class _FamilyScreenState extends State<FamilyScreen> {
+  final _formKeyCreate = GlobalKey<FormState>();
+  final _formKeyJoin = GlobalKey<FormState>();
   final _createNameController = TextEditingController();
   final _joinCodeController = TextEditingController();
 
@@ -36,14 +38,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
 
         if (user?.familyId == null) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Family'),
-            ),
             body: SafeArea(
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
+                    child: Text('Familie', style: greetingStyle(context)),
+                  ),
+                  const SizedBox(height: 16),
                   Text(
                     'Du bist noch in keiner Family.',
                     style: Theme.of(context).textTheme.titleMedium,
@@ -56,82 +59,102 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   const SizedBox(height: 32),
                   const Text('Family gründen', style: TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
-                  TextField(
-                    controller: _createNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Name der Family',
-                      hintText: 'z.B. Meine Familie',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final name = _createNameController.text.trim();
-                        if (name.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Bitte Namen eingeben')),
-                          );
-                          return;
-                        }
-                        final error = await provider.createFamily(name);
-                        if (!mounted) return;
-                        if (error == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Family erstellt! Code: ${provider.family?.inviteCode ?? ""}',
-                              ),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(error)),
-                          );
-                        }
-                      },
-                      child: const Text('Family gründen'),
+                  Form(
+                    key: _formKeyCreate,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: _createNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Name der Family',
+                            hintText: 'z.B. Meine Familie',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Bitte Namen eingeben';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_formKeyCreate.currentState!.validate()) {
+                                final name = _createNameController.text.trim();
+                                final error = await provider.createFamily(name);
+                                if (!mounted) return;
+                                if (error == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Family erstellt! Code: ${provider.family?.inviteCode ?? ""}',
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(error)),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text('Family gründen'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 32),
                   const Text('Family beitreten', style: TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 12),
-                  TextField(
-                    controller: _joinCodeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Einladungscode',
-                      hintText: 'z.B. A7KQ2',
-                      border: OutlineInputBorder(),
-                    ),
-                    textCapitalization: TextCapitalization.characters,
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final code = _joinCodeController.text.trim();
-                        if (code.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Bitte Code eingeben')),
-                          );
-                          return;
-                        }
-                        final error = await provider.joinFamily(code);
-                        if (!mounted) return;
-                        if (error == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Family beigetreten!')),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(error)),
-                          );
-                        }
-                      },
-                      child: const Text('Beitreten'),
+                  Form(
+                    key: _formKeyJoin,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: _joinCodeController,
+                          decoration: const InputDecoration(
+                            labelText: 'Einladungscode',
+                            hintText: 'z.B. A7KQ2',
+                            border: OutlineInputBorder(),
+                          ),
+                          textCapitalization: TextCapitalization.characters,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Bitte Code eingeben';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_formKeyJoin.currentState!.validate()) {
+                                final code = _joinCodeController.text.trim();
+                                final error = await provider.joinFamily(code);
+                                if (!mounted) return;
+                                if (error == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Family beigetreten!')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(error)),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text('Beitreten'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -141,18 +164,23 @@ class _FamilyScreenState extends State<FamilyScreen> {
         }
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(family?.name ?? 'Family'),
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              if (user?.familyId != null) {
-                await provider.loadUser(user!.id);
-              }
-            },
-            child: ListView(
-            padding: const EdgeInsets.only(bottom: 24),
-            children: [
+          body: SafeArea(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                if (user?.familyId != null) {
+                  await provider.loadUser(user!.id);
+                }
+              },
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 24),
+                children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Text(
+                  family?.name ?? 'Familie',
+                  style: greetingStyle(context),
+                ),
+              ),
               if (family != null)
                 MonthlyTotalCard(
                   monthlyTotal: total,
@@ -165,7 +193,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: Text('Members', style: sectionTitleStyle(context)),
+                child: Text('Mitglieder', style: sectionTitleStyle(context)),
               ),
               if (membersWithStats.isNotEmpty)
                 ...membersWithStats.asMap().entries.map((e) {
@@ -198,6 +226,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
             ],
             ),
           ),
+        ),
         );
       },
     );

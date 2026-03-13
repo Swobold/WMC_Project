@@ -73,7 +73,7 @@ class FamilyMemberCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Monthly spending',
+                      'Monatliche Ausgaben',
                       style: theme.textTheme.bodySmall!.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),

@@ -58,7 +58,7 @@ class MonthlyTotalCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
               Text(
-                'Monthly Total',
+                'Monatliche Summe',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.9),
                   fontSize: 14,
@@ -104,7 +104,7 @@ class MonthlyTotalCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 52, bottom: 2),
                 child: Text(
-                  'Code: $inviteCode',
+                  'Code: $inviteCode',  // bleibt gleich auf Deutsch
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
