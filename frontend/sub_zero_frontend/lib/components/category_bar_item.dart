@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Wiederverwendbarer Listen-Eintrag für eine Kategorie in der Analysis.
-/// Zeigt farbigen Punkt, Name, Gesamtpreis über dem Balken, Prozent unter dem Balken.
-/// Stateless – alle Daten werden von außen übergeben.
 class CategoryBarItem extends StatelessWidget {
   final String categoryName;
   final double percent;

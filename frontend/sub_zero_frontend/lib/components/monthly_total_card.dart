@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Wiederverwendbare Karten-Komponente für die monatliche Gesamtsumme.
-/// Stateless – alle Daten werden von außen übergeben.
 class MonthlyTotalCard extends StatelessWidget {
   final double monthlyTotal;
   final String currency;
@@ -104,7 +102,7 @@ class MonthlyTotalCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 52, bottom: 2),
                 child: Text(
-                  'Code: $inviteCode',  // bleibt gleich auf Deutsch
+                  'Code: $inviteCode',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 12,

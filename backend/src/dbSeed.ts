@@ -7,31 +7,26 @@ export function seedDb() {
     db.run("DELETE FROM families");
     db.run("DELETE FROM categories");
 
-    // Testfamilie für Doku
     db.run(
       "INSERT INTO families (id, name, invite_code) VALUES (?, ?, ?)",
       [1, "Testfamilie Muster", "DEMO99"]
     );
 
-    // Testuser (Hauptbenutzer für Doku) – 3 Abos, davon 2 gleiche Kategorie
     db.run(
       "INSERT INTO users (id, username, email, password, family_id, is_eur) VALUES (?, ?, ?, ?, ?, ?)",
       [1, "Max Mustermann", "max@mustermann.test", "Test1234", 1, 1]
     );
-    // Anderes Familienmitglied – mind. 1 Abo
     db.run(
       "INSERT INTO users (id, username, email, password, family_id, is_eur) VALUES (?, ?, ?, ?, ?, ?)",
       [2, "Simon Legat", "simon@test.demo", "Test1234", 1, 1]
     );
 
-    // Kategorien: Streaming, Unterhaltung, Produktivität behalten + Musik, Sport (Deutsch)
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [1, "Streaming", "#FFB3D1"]);
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [2, "Unterhaltung", "#D8C3F5"]);
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [3, "Produktivität", "#C7EFCF"]);
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [4, "Musik", "#BDE0FE"]);
     db.run("INSERT INTO categories (id, name, color_hex) VALUES (?, ?, ?)", [5, "Sport", "#FFE5B4"]);
 
-    // Abos von Max Mustermann (user 1): 3 Abos, davon 2 gleiche Kategorie (Streaming)
     db.run(
       `INSERT INTO subscriptions
        (id, title, price, billing_cycle, first_payment_date, next_reminder_date, user_id, category_id)
@@ -51,7 +46,6 @@ export function seedDb() {
       [3, "Spotify", 10.99, "monthly", "2026-02-10T00:00:00Z", "2026-03-10T00:00:00Z", 1, 4]
     );
 
-    // Abo von Simon Legat (user 2)
     db.run(
       `INSERT INTO subscriptions
        (id, title, price, billing_cycle, first_payment_date, next_reminder_date, user_id, category_id)

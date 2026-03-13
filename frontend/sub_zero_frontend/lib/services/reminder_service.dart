@@ -4,8 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 
-/// Verwaltet Android-Local-Notifications für Abo-Erinnerungen.
-/// Geräteabhängig – nutzt IDs aus SharedPreferences.
 class ReminderService {
   static final ReminderService _instance = ReminderService._();
   factory ReminderService() => _instance;
@@ -47,16 +45,6 @@ class ReminderService {
     _initialized = true;
   }
 
-  /// [subId] – Subscription-ID (wird als Notification-ID genutzt)
-  /// [title] – Abo-Name
-  /// [nextPaymentDate] – ISO-String z.B. "2026-03-15T00:00:00Z"
-  /// [daysBefore] – 1, 3 oder 7 Tage davor
-  ///
-  /// Monatliche Wiederholung: matchDateTimeComponents sorgt dafür, dass die
-  /// Erinnerung jeden Monat am gleichen Tag wiederholt wird.
-  /// Achtung: Bei Tag 29–31 (z.B. "3 Tage vor dem 3.") kann Android in kurzen
-  /// Monaten (Feb, Apr, Jun, Sep, Nov) inkonsistent sein. Wir nutzen Tag 28 als
-  /// Fallback – die Erinnerung kommt dann 1–3 Tage früher, aber zuverlässig.
   Future<void> scheduleReminder({
     required int subId,
     required String title,
@@ -72,12 +60,9 @@ class ReminderService {
     final reminderDate = dt.subtract(Duration(days: daysBefore));
     if (reminderDate.isBefore(DateTime.now())) return;
 
-    // Tag 29–31: Android hat Probleme in kurzen Monaten (Feb hat keinen 31.).
-    // Fallback auf 28 = Erinnerung 1–3 Tage früher, aber zuverlässig.
     int dayForRepeat = reminderDate.day;
     if (dayForRepeat >= 29) dayForRepeat = 28;
 
-    // Feste Uhrzeit 19:00 statt Mitternacht – besser testbar und sinnvoller
     const reminderHour = 19;
     const reminderMinute = 0;
 
@@ -111,13 +96,11 @@ class ReminderService {
     );
   }
 
-  /// Entfernt die geplante Erinnerung für ein Abo.
   Future<void> cancelReminder(int subId) async {
     if (!_initialized) await init();
     await _plugin.cancel(subId);
   }
 
-  /// Aktualisiert die Erinnerung (erst cancel, dann neu planen).
   Future<void> updateReminder({
     required int subId,
     required String title,

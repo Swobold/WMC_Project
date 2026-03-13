@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-/// Wiederverwendbare Karten-Komponente für die Analysis-Ansicht.
-/// Enthält Total Monthly Spending und Pie Chart.
-/// Stateless – alle Daten werden von außen übergeben.
 class AnalysisCard extends StatelessWidget {
   final double totalMonthlySpending;
   final String currency;

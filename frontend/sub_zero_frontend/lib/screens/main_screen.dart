@@ -7,9 +7,6 @@ import 'home_screen.dart';
 import 'settings_screen.dart';
 import '../providers/subzero_provider.dart';
 
-/// Haupt-Screen mit Bottom-Navigation (Tabs) wie in der PDF
-/// "120-flutter-navigation-and-routing.pdf" beschrieben.
-/// Verwendet IndexedStack, um den Tab-State zu erhalten.
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 

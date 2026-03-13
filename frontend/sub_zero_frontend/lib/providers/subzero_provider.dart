@@ -21,16 +21,13 @@ class SubZeroProvider extends ChangeNotifier {
   AppThemeMode _themeMode = AppThemeMode.light;
   AppThemeMode get themeMode => _themeMode;
 
-  /// Erinnerung pro Abo: subId -> Tage davor (0 = aus, 5/15/25 = an)
   Map<int, int> _reminderPrefs = {};
   Map<int, int> get reminderPrefs => Map.unmodifiable(_reminderPrefs);
 
   int getReminderDays(int subId) => _reminderPrefs[subId] ?? 0;
 
-  // URL
   final String _baseUrl = apiBaseUrl;
 
-  // Auth
   int? _loggedInUserId;
   String? _loggedInUsername;
   String? _loggedInEmail;
@@ -40,31 +37,22 @@ class SubZeroProvider extends ChangeNotifier {
   String? get loggedInEmail => _loggedInEmail;
   bool get isLoggedIn => _loggedInUserId != null;
 
-  // Categories
   List<Category> _categories = [];
   List<Category> get categories => _categories;
 
-  // Subscriptions
   List<Subscription> _subscriptions = [];
   List<Subscription> get subscriptions => _subscriptions;
 
-  // Stats
   StatsTotal? _statsTotal;
   StatsTotal? get statsTotal => _statsTotal;
 
   List<StatsByCategoryItem> _statsByCategory = [];
   List<StatsByCategoryItem> get statsByCategory => _statsByCategory;
 
-  // User (für Settings)
   User? _user;
   User? get user => _user;
 
-  /// Währungssymbol basierend auf User-Präferenz (isEur).
   String get currencySymbol => (_user?.isEur ?? true) ? '€' : '\$';
-
-  // -----------------------------
-  // THEME
-  // -----------------------------
 
   Future<void> setThemeMode(AppThemeMode mode) async {
     if (_themeMode == mode) return;
@@ -75,10 +63,6 @@ class SubZeroProvider extends ChangeNotifier {
       await prefs.setString(_themeKey, mode.storageKey);
     } catch (_) {}
   }
-
-  // -----------------------------
-  // REMINDER PREFS (SharedPreferences, geräteabhängig)
-  // -----------------------------
 
   Future<void> _loadReminderPrefs() async {
     try {
@@ -122,10 +106,6 @@ class SubZeroProvider extends ChangeNotifier {
     }
   }
 
-  // -----------------------------
-  // AUTH
-  // -----------------------------
-
   Future<bool> login(String email, String password) async {
     try {
       final response = await http.post(
@@ -153,7 +133,6 @@ class SubZeroProvider extends ChangeNotifier {
     }
   }
 
-  /// Gibt null bei Erfolg zurück, sonst die Fehlermeldung (z.B. "Username already exists").
   Future<String?> register(String username, String email, String password) async {
     try {
       final response = await http.post(
@@ -204,10 +183,6 @@ class SubZeroProvider extends ChangeNotifier {
     _familyCurrency = 'EUR';
     notifyListeners();
   }
-
-  // -----------------------------
-  // LOAD
-  // -----------------------------
 
   void loadCategories() async {
     try {
@@ -304,7 +279,6 @@ class SubZeroProvider extends ChangeNotifier {
     }
   }
 
-  /// Plant alle gespeicherten Erinnerungen neu (nach Sub-Load).
   Future<void> _rescheduleAllReminders() async {
     for (final sub in _subscriptions) {
       final days = _reminderPrefs[sub.id];
@@ -318,10 +292,6 @@ class SubZeroProvider extends ChangeNotifier {
       }
     }
   }
-
-  // -----------------------------
-  // SUBSCRIPTIONS (CRUD)
-  // -----------------------------
 
   Future<bool> addSubscription(SubscriptionInput data) async {
     if (_loggedInUserId == null) return false;
@@ -371,10 +341,6 @@ class SubZeroProvider extends ChangeNotifier {
     }
   }
 
-  // -----------------------------
-  // USER
-  // -----------------------------
-
   Future<void> updateUserCurrency(bool isEur) async {
     if (_loggedInUserId == null || _user == null) return;
     final previousUser = _user!;
@@ -403,10 +369,6 @@ class SubZeroProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // -----------------------------
-  // FAMILY
-  // -----------------------------
 
   Family? _family;
   List<FamilyMember> _familyMembers = [];

@@ -46,7 +46,6 @@ class Subscription {
       };
 }
 
-/// Für POST/PUT an das Backend (nur die benötigten Felder)
 class SubscriptionInput {
   final String title;
   final double price;

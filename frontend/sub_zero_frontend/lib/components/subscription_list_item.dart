@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Wiederverwendbarer Listen-Eintrag für ein Abo.
-/// Stateless – alle Daten und Callbacks werden von außen übergeben.
 class SubscriptionListItem extends StatelessWidget {
   final String title;
   final double price;

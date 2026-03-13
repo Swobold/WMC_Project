@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/family.dart';
 
-/// Karte für ein Familienmitglied mit Avatar, Name, monatlichen Ausgaben,
-/// Prozentanteil und Fortschrittsbalken – wie im Referenzbild.
 class FamilyMemberCard extends StatelessWidget {
   final FamilyMemberWithStats member;
   final double percent;

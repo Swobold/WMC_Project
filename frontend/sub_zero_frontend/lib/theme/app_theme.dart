@@ -42,7 +42,6 @@ extension AppThemeModeX on AppThemeMode {
   String get storageKey => name;
 }
 
-/// Einheitlicher Stil für Sektionsüberschriften (z.B. "Nach Kategorie", "Your Subscriptions")
 TextStyle sectionTitleStyle(BuildContext context) {
   final theme = Theme.of(context);
   return theme.textTheme.titleMedium!.copyWith(
@@ -52,7 +51,6 @@ TextStyle sectionTitleStyle(BuildContext context) {
   );
 }
 
-/// Stil für Begrüßung (z.B. "Hallo, User!")
 TextStyle greetingStyle(BuildContext context) {
   final theme = Theme.of(context);
   return theme.textTheme.titleLarge!.copyWith(
@@ -159,7 +157,6 @@ class AppTheme {
     );
   }
 
-  /// Light: Warme Sand-/Beige-Töne, weicher Amber-Akzent
   static ThemeData warm() {
     const seedColor = Color(0xFFD4A574);
     final colorScheme = ColorScheme.fromSeed(
@@ -207,7 +204,6 @@ class AppTheme {
     );
   }
 
-  /// Dark: Tiefes Blau-Schwarz, sanfter Blau-Akzent
   static ThemeData midnight() {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF64B5F6),

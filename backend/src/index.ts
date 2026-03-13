@@ -26,10 +26,6 @@ app.get("/test", (req: Request, res: Response) => {
   res.json({ ok: true });
 });
 
-// -----------------------------
-// AUTH
-// -----------------------------
-
 app.post("/auth/login", (req, res) => {
   const email = String(req.body?.email ?? "").trim();
   const password = String(req.body?.password ?? "");
@@ -85,10 +81,6 @@ app.post("/auth/register", (req, res) => {
   });
 });
 
-// -----------------------------
-// USERS
-// -----------------------------
-
 app.get("/users/:userId", (req, res) => {
   const userId = Number(req.params.userId);
   if (!userId || Number.isNaN(userId)) return res.status(400).json({ error: "Invalid userId" });
@@ -127,10 +119,6 @@ app.put("/users/:userId/currency", (req, res) => {
   );
 });
 
-// -----------------------------
-// FAMILIES
-// -----------------------------
-
 function generateInviteCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
@@ -140,7 +128,6 @@ function generateInviteCode(): string {
   return code;
 }
 
-// WICHTIG: /families/join VOR /families/:userId, sonst wird "join" als userId geparst!
 app.post("/families/join", (req, res) => {
   const userId = Number(req.body?.userId);
   const inviteCode = String(req.body?.inviteCode ?? "").trim().toUpperCase();
@@ -320,20 +307,12 @@ app.get("/families/:familyId/stats/total", async (req, res) => {
   res.json({ familyId, currency, total });
 });
 
-// -----------------------------
-// CATEGORIES 
-// -----------------------------
-
 app.get("/categories", (req, res) => {
   db.all("SELECT id, name, color_hex FROM categories ORDER BY name", [], (err, rows) => {
     if (err) return res.status(500).json({ error: "DB error (categories)" });
     res.json(rows);
   });
 });
-
-// -----------------------------
-// SUBSCRIPTIONS mit CURRENCY-MW (currency wird umgerechnet, je nachdem was man ausgewählt hat (€|$))
-// -----------------------------
 
 app.get("/subscriptions/:userId", currencyMiddleware, (req, res) => {
   const userId = Number(req.params.userId);
@@ -368,8 +347,6 @@ app.get("/subscriptions/:userId", currencyMiddleware, (req, res) => {
   });
 });
 
-// Neue Subscription hinzufügen
-
 app.post("/subscriptions/:userId", currencyMiddleware, (req, res) => {
   const userId = Number(req.params.userId);
 
@@ -398,8 +375,6 @@ app.post("/subscriptions/:userId", currencyMiddleware, (req, res) => {
     }
   );
 });
-
-// Wichtif für 1 bestimmte Subscription eines bestimmten Users wird zurückgegeben.
 
 app.put("/subscriptions/:userId/:subId", currencyMiddleware, (req, res) => {
   const userId = Number(req.params.userId);
@@ -447,12 +422,6 @@ app.delete("/subscriptions/:userId/:subId", currencyMiddleware, (req, res) => {
   );
 });
 
-// -----------------------------
-// STATS (currency-aware)
-// -----------------------------
-
-// Wichtig für den Main-Screen, hier wird die GESAMTAUSGABE des Users angezeigt
-
 app.get("/stats/:userId/total", currencyMiddleware, (req, res) => {
   const userId = Number(req.params.userId);
   const fxRate = (req as any).fxRate ?? 1;
@@ -467,10 +436,6 @@ app.get("/stats/:userId/total", currencyMiddleware, (req, res) => {
     res.json({ userId, currency, total });
   });
 });
-
-// Wichtig für den Analysis-Screen, hier werden alle AUsgaben einer Kategorie 
-// zusammengefügt und zurückgegeben.
-
 
 app.get("/stats/:userId/by-category", currencyMiddleware, (req, res) => {
   const userId = Number(req.params.userId);
